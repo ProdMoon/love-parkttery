@@ -65,7 +65,6 @@ createApp({
             timer.timeovered = false;
         },
         overTimer(timer) {
-            const self = this;
             timer.intervalID = setInterval(() => {
                 timer.seconds++;
                 if (timer.seconds > 59) {
@@ -91,7 +90,7 @@ createApp({
         validateTime(timer) {
             if (timer.seconds > 59) {
                 timer.seconds = 59;
-            } else if (timer.seconds < 0 || !timer.seconds) {
+            } else if (timer.seconds < 0) {
                 timer.seconds = 0;
             }
             if (timer.minutes > 59) {
@@ -105,8 +104,18 @@ createApp({
                 timer.hours = 0;
             }
         },
+        validateTimeNull(timer) {
+            if (!timer.seconds) {
+                timer.seconds = 0;
+            }
+            if (!timer.minutes) {
+                timer.minutes = 0;
+            }
+            if (!timer.hours) {
+                timer.hours = 0;
+            }
+        },
         handleTimeovered(timer) {
-            const self = this;
             if (timer.timeovered) {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.add("over");
@@ -133,7 +142,7 @@ createApp({
             handler() {
                 this.validateTime(this.timers.main);
                 this.handleTimeovered(this.timers.main);
-            },
+        },
             deep: true,
         },
         "timers.sub1": {

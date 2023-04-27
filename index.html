@@ -82,8 +82,8 @@
             <div class="settings">
                 <div class="settings-container">
                     <div class="box">
-                        <div>
-                            <h3>메인 타이머 설정</h3>
+                        <h3>메인 타이머 설정</h3>
+                        <div @change="validateTimeNull(timers.main)">
                             <input class="w-narrow" type="number" v-model="timers.main.hours" /> 시간
                             <input class="w-narrow" type="number" v-model="timers.main.minutes" /> 분
                             <input class="w-narrow" type="number" v-model="timers.main.seconds" /> 초
@@ -100,8 +100,13 @@
                     </div>
                     <div class="divider"></div>
                     <div class="box">
-                        <h3>서브 타이머 설정</h3>
-                        <div>
+                        <div class="h3-flex">
+                            <h3>서브 타이머 설정</h3>
+                            <div>
+                                <input class="switch" type="checkbox" style="margin-right: 2rem"/>
+                            </div>
+                        </div>
+                        <div @change="validateTimeNull(timers.sub1)">
                             <input class="w-narrow" type="number" v-model="timers.sub1.hours" /> 시간
                             <input class="w-narrow" type="number" v-model="timers.sub1.minutes" /> 분
                             <input class="w-narrow" type="number" v-model="timers.sub1.seconds" /> 초

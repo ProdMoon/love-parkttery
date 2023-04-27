@@ -71,7 +71,7 @@ input {
     box-shadow: 1.2px 1.2px 2px #999;
 }
 input[type="range"] {
-    -webkit-appearance: none;
+    appearance: none;
     width: 80%;
     height: 2px;
     padding: 0;
@@ -91,6 +91,19 @@ input[type="file"] {
     background-color: #ccc;
     width: 80%;
     box-shadow: none;
+}
+input[type="checkbox"] .switch {
+    appearance: none;
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 10px;
+    background-color: #ccc;
+    transition: ease-in-out 0.15s;
+}
+input[type="checkbox"]:checked .switch {
+    transform: translate(20px, 0);
+    background-color: #7929ba;
 }
 
 /* global style class */
@@ -124,6 +137,14 @@ input[type="file"] {
 }
 .over {
     color: red !important;
+}
+.h3-flex {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.h3-flex > h3 {
+    margin: 0;
 }
 
 /* local style class */
