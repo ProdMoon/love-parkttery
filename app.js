@@ -7,9 +7,12 @@ createApp({
                     hours: 0,
                     minutes: 0,
                     seconds: 0,
+                    warningSeconds: 60,
+                    warningEnabled: true,
                     intervalID: null,
                     timeovered: false,
                     timerClassName: "main-timer",
+                    timerSettingClassName: "main-timer-setting",
                     transparency: 50,
                     color: "#ffffff",
                 },
@@ -20,6 +23,7 @@ createApp({
                     intervalID: null,
                     timeovered: false,
                     timerClassName: "sub1-timer",
+                    timerContainerClassName: "sub1-container",
                     label: "",
                 },
             },
@@ -135,6 +139,32 @@ createApp({
         clearBackgroundImage() {
             document.querySelector("body").style.backgroundImage = "";
             localStorage.removeItem("bgimage");
+        },
+        toggleAppearance(timer) {
+            const timerElement = document.querySelector(`.${timer.timerContainerClassName}`);
+            if (timerElement.classList.contains("hide")) {
+                timerElement.classList.remove("hide");
+            } else {
+                timerElement.classList.add("hide");
+            }
+        },
+        toggleWarning(timer) {
+            timer.warningEnabled = !timer.warningEnabled;
+            const timerWarningElement = document.querySelector(`.${timer.timerSettingClassName} .warning-seconds-input`);
+            if (timer.warningEnabled) {
+                timerWarningElement.removeAttribute("disabled");
+            } else {
+                timerWarningElement.setAttribute("disabled", true);
+            }
+        },
+        handleWarning(timer) {
+            if (timer.warningEnabled && timer.intervalID && !timer.timeovered && timer.seconds <= timer.warningSeconds) {
+                const timerElement = document.querySelector(`.${timer.timerClassName}`);
+                timerElement.classList.add("warning");
+            } else {
+                const timerElement = document.querySelector(`.${timer.timerClassName}`);
+                timerElement.classList.remove("warning");
+            }
         }
     },
     watch: {
@@ -142,7 +172,8 @@ createApp({
             handler() {
                 this.validateTime(this.timers.main);
                 this.handleTimeovered(this.timers.main);
-        },
+                this.handleWarning(this.timers.main);
+            },
             deep: true,
         },
         "timers.sub1": {
