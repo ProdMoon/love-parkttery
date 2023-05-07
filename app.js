@@ -11,6 +11,7 @@ createApp({
                     warningEnabled: true,
                     intervalID: null,
                     timeovered: false,
+                    timeoverModalShown: false,
                     timerClassName: "main-timer",
                     timerSettingClassName: "main-timer-setting",
                     transparency: 50,
@@ -24,6 +25,7 @@ createApp({
                     timeovered: false,
                     timerClassName: "sub1-timer",
                     timerContainerClassName: "sub1-container",
+                    timerSettingClassName: "sub1-timer-setting",
                     label: "",
                 },
             },
@@ -67,6 +69,11 @@ createApp({
             timer.seconds = 0;
             self.clearCurrentInterval(timer);
             timer.timeovered = false;
+            timer.timeoverModalShown = false;
+            const timeoverModalElement = document.querySelector(".timeover-modal");
+            if (timeoverModalElement.classList.contains("show")) {
+                timeoverModalElement.classList.remove("show");
+            }
         },
         overTimer(timer) {
             timer.intervalID = setInterval(() => {
@@ -123,6 +130,18 @@ createApp({
             if (timer.timeovered) {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.add("over");
+
+                const timeoverModalElement = document.querySelector(".timeover-modal");
+                if (timer.timeoverModalShown === false) {
+                    timer.timeoverModalShown = true;
+                    timeoverModalElement.classList.add("show");
+                    const timeout = setTimeout(() => {
+                        if (timeoverModalElement.classList.contains("show")) {
+                            timeoverModalElement.classList.remove("show");
+                        }
+                        return clearTimeout(timeout);
+                    }, 10000);
+                }
             } else {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.remove("over");
@@ -147,25 +166,37 @@ createApp({
             } else {
                 timerElement.classList.add("hide");
             }
+
+            const timerSettingElement = document.querySelector(`.${timer.timerSettingClassName} .properties`);
+            if (timerSettingElement.classList.contains("hide")) {
+                timerSettingElement.classList.remove("hide");
+            } else {
+                timerSettingElement.classList.add("hide");
+            }
         },
         toggleWarning(timer) {
             timer.warningEnabled = !timer.warningEnabled;
-            const timerWarningElement = document.querySelector(`.${timer.timerSettingClassName} .warning-seconds-input`);
+            const warningSettingElement = document.querySelector(`.${timer.timerSettingClassName} .warning-setting .properties`);
             if (timer.warningEnabled) {
-                timerWarningElement.removeAttribute("disabled");
+                warningSettingElement.classList.remove("hide");
             } else {
-                timerWarningElement.setAttribute("disabled", true);
+                warningSettingElement.classList.add("hide");
             }
         },
         handleWarning(timer) {
-            if (timer.warningEnabled && timer.intervalID && !timer.timeovered && timer.seconds <= timer.warningSeconds) {
+            if (
+                timer.warningEnabled &&
+                timer.intervalID &&
+                !timer.timeovered &&
+                timer.hours * 3600 + timer.minutes * 60 + timer.seconds <= timer.warningSeconds
+            ) {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.add("warning");
             } else {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.remove("warning");
             }
-        }
+        },
     },
     watch: {
         "timers.main": {

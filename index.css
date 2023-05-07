@@ -268,13 +268,8 @@ input[type="file"] {
     transition: ease-in-out 0.4s;
 }
 .settings-background.show {
-    position: fixed;
     z-index: 8;
     background-color: rgba(0, 0, 0, 0.5);
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
 }
 .settings {
     position: fixed;
@@ -314,4 +309,40 @@ input[type="file"] {
 }
 .settings.show {
     transform: translateX(-400px);
+}
+/* timeover modal */
+.timeover-modal {
+    position: fixed;
+    top: 10%;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+.timeover-modal > .box {
+    width: 70rem;
+    height: 15rem;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: ease-in-out 0.4s;
+}
+.timeover-modal.show > .box {
+    background-color: rgba(255, 255, 255, 1);
+}
+.timeover-modal > .box > h1 {
+    font-size: 5.5rem;
+    font-weight: bold;
+    letter-spacing: -0.2rem;
+    color: rgba(0, 0, 0, 0);
+    transition: ease-in-out 0.4s;
+}
+.timeover-modal.show > .box > h1 {
+    color: rgba(0, 0, 0, 1);
+}
+@media screen and (max-width: 960px) {
+    .timeover-modal > .box > h1 {
+        font-size: 4rem;
+    }
 }
