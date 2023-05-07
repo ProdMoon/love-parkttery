@@ -7,9 +7,13 @@ createApp({
                     hours: 0,
                     minutes: 0,
                     seconds: 0,
+                    warningSeconds: 60,
+                    warningEnabled: true,
                     intervalID: null,
                     timeovered: false,
+                    timeoverModalShown: false,
                     timerClassName: "main-timer",
+                    timerSettingClassName: "main-timer-setting",
                     transparency: 50,
                     color: "#ffffff",
                 },
@@ -20,6 +24,8 @@ createApp({
                     intervalID: null,
                     timeovered: false,
                     timerClassName: "sub1-timer",
+                    timerContainerClassName: "sub1-container",
+                    timerSettingClassName: "sub1-timer-setting",
                     label: "",
                 },
             },
@@ -63,9 +69,13 @@ createApp({
             timer.seconds = 0;
             self.clearCurrentInterval(timer);
             timer.timeovered = false;
+            timer.timeoverModalShown = false;
+            const timeoverModalElement = document.querySelector(".timeover-modal");
+            if (timeoverModalElement.classList.contains("show")) {
+                timeoverModalElement.classList.remove("show");
+            }
         },
         overTimer(timer) {
-            const self = this;
             timer.intervalID = setInterval(() => {
                 timer.seconds++;
                 if (timer.seconds > 59) {
@@ -91,7 +101,7 @@ createApp({
         validateTime(timer) {
             if (timer.seconds > 59) {
                 timer.seconds = 59;
-            } else if (timer.seconds < 0 || !timer.seconds) {
+            } else if (timer.seconds < 0) {
                 timer.seconds = 0;
             }
             if (timer.minutes > 59) {
@@ -105,11 +115,33 @@ createApp({
                 timer.hours = 0;
             }
         },
+        validateTimeNull(timer) {
+            if (!timer.seconds) {
+                timer.seconds = 0;
+            }
+            if (!timer.minutes) {
+                timer.minutes = 0;
+            }
+            if (!timer.hours) {
+                timer.hours = 0;
+            }
+        },
         handleTimeovered(timer) {
-            const self = this;
             if (timer.timeovered) {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.add("over");
+
+                const timeoverModalElement = document.querySelector(".timeover-modal");
+                if (timer.timeoverModalShown === false) {
+                    timer.timeoverModalShown = true;
+                    timeoverModalElement.classList.add("show");
+                    const timeout = setTimeout(() => {
+                        if (timeoverModalElement.classList.contains("show")) {
+                            timeoverModalElement.classList.remove("show");
+                        }
+                        return clearTimeout(timeout);
+                    }, 10000);
+                }
             } else {
                 const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.remove("over");
@@ -126,13 +158,52 @@ createApp({
         clearBackgroundImage() {
             document.querySelector("body").style.backgroundImage = "";
             localStorage.removeItem("bgimage");
-        }
+        },
+        toggleAppearance(timer) {
+            const timerElement = document.querySelector(`.${timer.timerContainerClassName}`);
+            if (timerElement.classList.contains("hide")) {
+                timerElement.classList.remove("hide");
+            } else {
+                timerElement.classList.add("hide");
+            }
+
+            const timerSettingElement = document.querySelector(`.${timer.timerSettingClassName} .properties`);
+            if (timerSettingElement.classList.contains("hide")) {
+                timerSettingElement.classList.remove("hide");
+            } else {
+                timerSettingElement.classList.add("hide");
+            }
+        },
+        toggleWarning(timer) {
+            timer.warningEnabled = !timer.warningEnabled;
+            const warningSettingElement = document.querySelector(`.${timer.timerSettingClassName} .warning-setting .properties`);
+            if (timer.warningEnabled) {
+                warningSettingElement.classList.remove("hide");
+            } else {
+                warningSettingElement.classList.add("hide");
+            }
+        },
+        handleWarning(timer) {
+            if (
+                timer.warningEnabled &&
+                timer.intervalID &&
+                !timer.timeovered &&
+                timer.hours * 3600 + timer.minutes * 60 + timer.seconds <= timer.warningSeconds
+            ) {
+                const timerElement = document.querySelector(`.${timer.timerClassName}`);
+                timerElement.classList.add("warning");
+            } else {
+                const timerElement = document.querySelector(`.${timer.timerClassName}`);
+                timerElement.classList.remove("warning");
+            }
+        },
     },
     watch: {
         "timers.main": {
             handler() {
                 this.validateTime(this.timers.main);
                 this.handleTimeovered(this.timers.main);
+                this.handleWarning(this.timers.main);
             },
             deep: true,
         },

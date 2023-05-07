@@ -71,7 +71,7 @@ input {
     box-shadow: 1.2px 1.2px 2px #999;
 }
 input[type="range"] {
-    -webkit-appearance: none;
+    appearance: none;
     width: 80%;
     height: 2px;
     padding: 0;
@@ -124,6 +124,73 @@ input[type="file"] {
 }
 .over {
     color: red !important;
+}
+.warning {
+    animation-name: warning !important;
+    animation-duration: 1.5s !important;
+    animation-iteration-count: infinite !important;
+}
+@keyframes warning {
+    0% {
+        color: #ff7700;
+    }
+    50% {
+        color: #ffffff;
+    }
+    100% {
+        color: #ff7700;
+    }
+}
+.hide {
+    display: none !important;
+}
+.flex-align-center {
+    display: flex;
+    align-items: center;
+}
+.flex-align-center > h3 {
+    margin: 0;
+}
+.switch-wrapper {
+    display: flex;
+    margin: 0 0.5rem;
+}
+.switch-wrapper > .switch {
+    appearance: none;
+    width: 3rem;
+    height: 1.5rem;
+    border-radius: 1rem;
+    padding: 0;
+    background-color: #ccc;
+    transition: ease-in-out 0.15s;
+}
+.switch-wrapper > .switch.small {
+    width: 2rem;
+    height: 1rem;
+    border-radius: 1rem;
+}
+.switch-wrapper > .switch:checked {
+    background-color: #7929ba;
+}
+.switch-wrapper > .circle {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: white;
+    box-shadow: 1px 1px 2px #999;
+    transition: ease-in-out 0.15s;
+    transform: translate(-3.5rem, 0.5rem);
+}
+.switch-wrapper > .circle.small {
+    width: 1rem;
+    height: 1rem;
+    transform: translate(-2.5rem, 0.5rem);
+}
+.switch-wrapper > .switch:checked + .circle {
+    transform: translate(-2rem, 0.5rem);
+}
+.switch-wrapper > .switch.small:checked + .circle.small {
+    transform: translate(-1.5rem, 0.5rem);
 }
 
 /* local style class */
@@ -201,13 +268,8 @@ input[type="file"] {
     transition: ease-in-out 0.4s;
 }
 .settings-background.show {
-    position: fixed;
     z-index: 8;
     background-color: rgba(0, 0, 0, 0.5);
-    width: 100vw;
-    height: 100vh;
-    top: 0;
-    left: 0;
 }
 .settings {
     position: fixed;
@@ -247,4 +309,40 @@ input[type="file"] {
 }
 .settings.show {
     transform: translateX(-400px);
+}
+/* timeover modal */
+.timeover-modal {
+    position: fixed;
+    top: 10%;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+}
+.timeover-modal > .box {
+    width: 70rem;
+    height: 15rem;
+    background-color: rgba(255, 255, 255, 0);
+    border-radius: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: ease-in-out 0.4s;
+}
+.timeover-modal.show > .box {
+    background-color: rgba(255, 255, 255, 1);
+}
+.timeover-modal > .box > h1 {
+    font-size: 5.5rem;
+    font-weight: bold;
+    letter-spacing: -0.2rem;
+    color: rgba(0, 0, 0, 0);
+    transition: ease-in-out 0.4s;
+}
+.timeover-modal.show > .box > h1 {
+    color: rgba(0, 0, 0, 1);
+}
+@media screen and (max-width: 960px) {
+    .timeover-modal > .box > h1 {
+        font-size: 4rem;
+    }
 }
