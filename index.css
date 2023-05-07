@@ -163,6 +163,7 @@ input[type="file"] {
     padding: 0;
     background-color: #ccc;
     transition: ease-in-out 0.15s;
+    cursor: pointer;
 }
 .switch-wrapper > .switch.small {
     width: 2rem;
@@ -180,6 +181,7 @@ input[type="file"] {
     box-shadow: 1px 1px 2px #999;
     transition: ease-in-out 0.15s;
     transform: translate(-3.5rem, 0.5rem);
+    cursor: pointer;
 }
 .switch-wrapper > .circle.small {
     width: 1rem;
