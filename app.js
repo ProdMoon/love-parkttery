@@ -147,7 +147,7 @@ createApp({
                 timeoverModalElement.classList.add("show");
                 timer.timeoverModal.timeoutID = setTimeout(() => {
                     timeoverModalElement.classList.remove("show");
-                    return clearTimeout(self.timeoverModal.timeoutID);
+                    return clearTimeout(timer.timeoverModal.timeoutID);
                 }, 10000);
             }
         },
