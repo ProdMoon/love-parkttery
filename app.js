@@ -148,7 +148,7 @@ createApp({
                 timer.timeoverModal.timeoutID = setTimeout(() => {
                     timeoverModalElement.classList.remove("show");
                     return clearTimeout(self.timeoverModal.timeoutID);
-                }, 3000);
+                }, 10000);
             }
         },
         onBackgroundImageFileChange(e) {
