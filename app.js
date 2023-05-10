@@ -11,7 +11,10 @@ createApp({
                     warningEnabled: true,
                     intervalID: null,
                     timeovered: false,
-                    timeoverModalShown: false,
+                    timeoverModal: {
+                        hasShown: false,
+                        timeoutID: null,
+                    },
                     timerClassName: "main-timer",
                     timerSettingClassName: "main-timer-setting",
                     transparency: 50,
@@ -69,11 +72,7 @@ createApp({
             timer.seconds = 0;
             self.clearCurrentInterval(timer);
             timer.timeovered = false;
-            timer.timeoverModalShown = false;
-            const timeoverModalElement = document.querySelector(".timeover-modal");
-            if (timeoverModalElement.classList.contains("show")) {
-                timeoverModalElement.classList.remove("show");
-            }
+            self.clearTimeoverModal(timer);
         },
         overTimer(timer) {
             timer.intervalID = setInterval(() => {
@@ -91,6 +90,13 @@ createApp({
         clearCurrentInterval(timer) {
             clearInterval(timer.intervalID);
             timer.intervalID = null;
+        },
+        clearTimeoverModal(timer) {
+            const timeoverModalElement = document.querySelector(".timeover-modal");
+            timeoverModalElement.classList.remove("show");
+            timer.timeoverModal.hasShown = false;
+            clearTimeout(timer.timeoverModal.timeoutID);
+            timer.timeoverModal.timeoutID = null;
         },
         toggleShowSettings() {
             const settings = document.querySelector(".settings");
@@ -127,24 +133,22 @@ createApp({
             }
         },
         handleTimeovered(timer) {
+            const timerElement = document.querySelector(`.${timer.timerClassName}`);
             if (timer.timeovered) {
-                const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.add("over");
-
-                const timeoverModalElement = document.querySelector(".timeover-modal");
-                if (timer.timeoverModalShown === false) {
-                    timer.timeoverModalShown = true;
-                    timeoverModalElement.classList.add("show");
-                    const timeout = setTimeout(() => {
-                        if (timeoverModalElement.classList.contains("show")) {
-                            timeoverModalElement.classList.remove("show");
-                        }
-                        return clearTimeout(timeout);
-                    }, 10000);
-                }
             } else {
-                const timerElement = document.querySelector(`.${timer.timerClassName}`);
                 timerElement.classList.remove("over");
+            }
+        },
+        handleTimeoverModal(timer) {
+            const timeoverModalElement = document.querySelector(".timeover-modal");
+            if (timer.timeovered === true && timer.timeoverModal.hasShown === false) {
+                timer.timeoverModal.hasShown = true;
+                timeoverModalElement.classList.add("show");
+                timer.timeoverModal.timeoutID = setTimeout(() => {
+                    timeoverModalElement.classList.remove("show");
+                    return clearTimeout(self.timeoverModal.timeoutID);
+                }, 3000);
             }
         },
         onBackgroundImageFileChange(e) {
@@ -202,8 +206,9 @@ createApp({
         "timers.main": {
             handler() {
                 this.validateTime(this.timers.main);
-                this.handleTimeovered(this.timers.main);
                 this.handleWarning(this.timers.main);
+                this.handleTimeovered(this.timers.main);
+                this.handleTimeoverModal(this.timers.main);
             },
             deep: true,
         },
